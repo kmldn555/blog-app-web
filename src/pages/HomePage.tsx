@@ -28,7 +28,7 @@ function HomePage() {
       const { data } = await axiosInstance.get<PaginationResponse<Blog>>(
         "/posts",
         {
-          params: { page: page },
+          params: { page: page, take: 3 },
         },
       );
       setBlogs(data);
@@ -59,7 +59,7 @@ function HomePage() {
 
   useEffect(() => {
     getBlogs();
-  }, []);
+  }, [page]);
 
   return (
     <div>
