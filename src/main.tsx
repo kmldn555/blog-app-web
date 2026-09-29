@@ -29,7 +29,7 @@ const router = createBrowserRouter([
     element: <LoginPageDaniel />,
   },
   {
-    path: "/blogs/:objectId",
+    path: "/blogs/:slug",
     element: <BlogDetail />,
   },
   {
