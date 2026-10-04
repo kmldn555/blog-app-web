@@ -35,7 +35,7 @@ const router = createBrowserRouter([
   {
     path: "/write",
     element: <CreateBlog />,
-    loader: authLoader,
+    // loader: authLoader,
   },
 ]);
 
