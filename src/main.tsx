@@ -4,7 +4,7 @@ import "./index.css";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import RegisterPage from "./pages/RegisterPage";
-import LoginPage from "./pages/LoginPage";
+// import LoginPage from "./pages/LoginPage";
 import LoginPageDaniel from "./pages/LoginPageDaniel";
 import HomePage from "./pages/HomePage";
 import BlogDetail from "./pages/BlogDetail";
@@ -20,10 +20,10 @@ const router = createBrowserRouter([
     path: "/register",
     element: <RegisterPage />,
   },
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
+  // {
+  //   path: "/login",
+  //   element: <LoginPage />,
+  // },
   {
     path: "/login2",
     element: <LoginPageDaniel />,
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
   {
     path: "/write",
     element: <CreateBlog />,
-    // loader: authLoader,
+    loader: authLoader,
   },
 ]);
 

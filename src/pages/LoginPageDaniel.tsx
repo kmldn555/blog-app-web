@@ -23,21 +23,23 @@ function LoginPageDaniel() {
   const handleLogin = async (values: LoginSchema) => {
     setIsLoading(true);
     try {
-      const { data } = await axiosInstance.post("/users/login", {
-        login: values.email,
+      const { data } = await axiosInstance.post("/auth/login", {
+        email: values.email,
         password: values.password,
       });
 
       login({
-        name: data.name,
-        email: data.email,
-        objectId: data.objectId,
-        token: data["user-token"],
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        role: data.user.role,
+        profilePic: data.user.profilePic,
+        accessToken: data.accessToken,
       });
 
       alert("Login Success!");
 
-      navigate("/")
+      navigate("/");
     } catch (error) {
       console.log(error);
       alert("Login Failed!");
