@@ -6,7 +6,6 @@ export const createBlogSchema = z.object({
     .string()
     .min(20, "Description must be at least 20 characters."),
 category: z.string().min(1, "Category is required"),
-author: z.string().min(1, "Author is required"),
 content: z.string().min(1, "Content is required"),
 thumbnail: z.instanceof(File, {message: "Thumbnail must be a file"}),
 });

@@ -12,9 +12,7 @@ function BlogDetail() {
 
   const getBlog = async () => {
     try {
-      const { data } = await axiosInstance.get<Post>(
-        `/posts/${params.slug}`,
-      );
+      const { data } = await axiosInstance.get<Post>(`/posts/${params.slug}`);
       setBlog(data);
     } catch (error) {
       console.log(error);
