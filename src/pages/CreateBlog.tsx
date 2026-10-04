@@ -60,7 +60,6 @@ function CreateBlog() {
         title: data.title,
         description: data.description,
         category: data.category,
-        userId: 4,
         content: data.content,
         thumbnail: response.data.fileURL,
       });
