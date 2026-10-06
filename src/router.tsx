@@ -5,6 +5,7 @@ import CreateBlog from "./pages/CreateBlog";
 import HomePage from "./pages/HomePage";
 import LoginPageDaniel from "./pages/LoginPageDaniel";
 import RegisterPage from "./pages/RegisterPage";
+import ForgotPassword from "./pages/ForgotPassword";
 
 export const router = createBrowserRouter([
   {
@@ -31,5 +32,9 @@ export const router = createBrowserRouter([
     path: "/write",
     element: <CreateBlog />,
     loader: authLoader,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
   },
 ]);

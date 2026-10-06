@@ -15,20 +15,12 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { axiosInstance } from "@/lib/axios";
+import useCreatePost from "@/hooks/api/post/useCreatePost";
 import { createBlogSchema, type CreateBlogSchema } from "@/schema/createBlog";
-import type { ResponseFileService } from "@/types/backendless";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
 
 function CreateBlog() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const navigate = useNavigate();
-
   const form = useForm<CreateBlogSchema>({
     resolver: zodResolver(createBlogSchema),
     defaultValues: {
@@ -40,38 +32,10 @@ function CreateBlog() {
     },
   });
 
+  const { mutate, isPending } = useCreatePost();
+
   async function onSubmit(data: CreateBlogSchema) {
-    try {
-      setIsLoading(true);
-
-      // step 1 : upload thumbnail ke file service
-      const formData = new FormData();
-      formData.append("file", data.thumbnail);
-      const fileName = Date.now() + Math.floor(Math.random() * 1000);
-      const folderName = "images";
-
-      const response = await axios.post<ResponseFileService>(
-        `https://finestpunishment-us.backendless.app/api/files/${folderName}/${fileName}`,
-        formData,
-      );
-
-      // step 2 : submit data (yang berupa tulisan) ke backendless
-      await axiosInstance.post("/posts", {
-        title: data.title,
-        description: data.description,
-        category: data.category,
-        content: data.content,
-        thumbnail: response.data.fileURL,
-      });
-
-      alert("Create blog success");
-
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
+    mutate(data);
   }
 
   return (
@@ -204,8 +168,8 @@ function CreateBlog() {
             >
               Reset
             </Button>
-            <Button type="submit" form="form-create-blog" disabled={isLoading}>
-              {isLoading ? "Loading" : "Submit"}{" "}
+            <Button type="submit" form="form-create-blog" disabled={isPending}>
+              {isPending ? "Loading" : "Submit"}{" "}
               {/* buat atur perubahan button */}
             </Button>
           </Field>
