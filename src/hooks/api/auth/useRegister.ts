@@ -3,6 +3,7 @@ import type { RegisterSchema } from "@/schema/register";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useNavigate } from "react-router";
+import { toast } from "sonner"
 
 function useRegister() {
   const navigate = useNavigate();
@@ -16,11 +17,11 @@ function useRegister() {
       });
     },
     onSuccess: () => {
-      alert("Register Success!");
+      toast.success("Register Success!");
       navigate("/login");
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      alert(error.response?.data.message || "Register Failed!");
+      toast.error(error.response?.data.message || "Register Failed!");
     },
   });
 }

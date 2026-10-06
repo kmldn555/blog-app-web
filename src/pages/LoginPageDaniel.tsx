@@ -1,20 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { useAuth } from "@/stores/useAuth";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import useLogin from "@/hooks/api/auth/useLogin";
 import { loginSchema, type LoginSchema } from "@/schema/login";
-import { axiosInstance } from "@/lib/axios";
-import { useNavigate } from "react-router";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 function LoginPageDaniel() {
   const { register, handleSubmit, formState } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   });
 
-const {mutate, isPending } = useLogin();
+  const { mutate, isPending } = useLogin();
 
   const handleLogin = async (values: LoginSchema) => {
     mutate(values);
