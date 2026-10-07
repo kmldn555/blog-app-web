@@ -11,14 +11,14 @@ function useRegister() {
   return useMutation({
     mutationFn: async (values: RegisterSchema) => {
       await axiosInstance.post("/auth/register", {
-        name: values.nama,
+        nama: values.nama,
         email: values.email,
         password: values.password,
       });
     },
     onSuccess: () => {
       toast.success("Register Success!");
-      navigate("/login");
+      navigate("/login2");
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data.message || "Register Failed!");
