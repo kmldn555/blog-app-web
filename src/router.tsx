@@ -1,51 +1,64 @@
 import { createBrowserRouter } from "react-router";
 import { authLoader } from "./loaders/auth";
-import BlogDetail from "./pages/BlogDetail";
-import CreateBlog from "./pages/CreateBlog";
-import HomePage from "./pages/HomePage";
-import LoginPageDaniel from "./pages/LoginPageDaniel";
-import RegisterPage from "./pages/RegisterPage";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import NotFound from "./pages/NotFound";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    lazy: async () => {
+      const { default: HomePage } = await import("./pages/HomePage");
+      return { Component: HomePage };
+    },
   },
   {
     path: "/register",
-    element: <RegisterPage />,
+    lazy: async () => {
+      const { default: RegisterPage } = await import("./pages/RegisterPage");
+      return { Component: RegisterPage };
+    },
   },
-  // {
-  //   path: "/login",
-  //   element: <LoginPage />,
-  // },
   {
     path: "/login2",
-    element: <LoginPageDaniel />,
+    lazy: async () => {
+      const { default: LoginPageDaniel } =
+        await import("./pages/LoginPageDaniel");
+      return { Component: LoginPageDaniel };
+    },
   },
   {
     path: "/blogs/:slug",
-    element: <BlogDetail />,
+    lazy: async () => {
+      const { default: BlogDetail } = await import("./pages/BlogDetail");
+      return { Component: BlogDetail };
+    },
   },
   {
     path: "/write",
-    element: <CreateBlog />,
+    lazy: async () => {
+      const { default: CreateBlog } = await import("./pages/CreateBlog");
+      return { Component: CreateBlog };
+    },
     loader: authLoader,
   },
   {
     path: "/forgot-password",
-    element: <ForgotPassword />,
+    lazy: async () => {
+      const { default: ForgotPassword } =
+        await import("./pages/ForgotPassword");
+      return { Component: ForgotPassword };
+    },
   },
   {
     path: "/reset-password",
-    element: <ResetPassword />,
+    lazy: async () => {
+      const { default: ResetPassword } = await import("./pages/ResetPassword");
+      return { Component: ResetPassword };
+    },
   },
   {
     path: "*",
-    element: <NotFound />,
+    lazy: async () => {
+      const { default: NotFound } = await import("./pages/NotFound");
+      return { Component: NotFound };
+    },
   },
-  
 ]);
