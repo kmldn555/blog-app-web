@@ -1,17 +1,24 @@
 import GlobalPagination from "@/components/GlobalPagination";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import useGetPosts from "@/hooks/api/post/useGetPosts";
 import { useAuth } from "@/stores/useAuth";
-import { useState } from "react";
+import { parseAsInteger, useQueryState } from "nuqs";
 import { Link } from "react-router";
+import { useDebounceValue } from "usehooks-ts";
 
 function HomePage() {
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
+  const [search, setSearch] = useQueryState("search", { defaultValue: "" });
+  const [debouncedSearch] = useDebounceValue(search, 700);
 
   const { user, logout } = useAuth();
 
-  const { data: blogs, isPending } = useGetPosts({page})
+  const { data: blogs, isPending } = useGetPosts({
+    page,
+    search: debouncedSearch,
+  });
 
   return (
     <div>
@@ -33,6 +40,17 @@ function HomePage() {
             </Link>
           </div>
         )}
+      </div>
+
+      <div className="max-w-2xl flex mx-auto my-8">
+        <Input
+          placeholder="search.."
+          onChange={(e) => {
+            setPage(1);
+            setSearch(e.target.value);
+          }}
+          value={search}
+        />
       </div>
 
       {isPending ? (
