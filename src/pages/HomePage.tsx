@@ -1,85 +1,72 @@
-import GlobalPagination from "@/components/GlobalPagination";
-import Loading from "@/components/Loading";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import useGetPosts from "@/hooks/api/post/useGetPosts";
-import { useAuth } from "@/stores/useAuth";
-import { parseAsInteger, useQueryState } from "nuqs";
-import { Link } from "react-router";
+import { parseAsInteger, parseAsStringLiteral, useQueryState } from "nuqs";
 import { useDebounceValue } from "usehooks-ts";
+
+import Footer from "@/components/Footer";
+import BlogList from "@/components/HomePage/BlogList";
+import HeroSections from "@/components/HomePage/HeroSections";
+import Navbar from "@/components/Navbar";
+import useGetPosts from "@/hooks/api/post/useGetPosts";
 
 function HomePage() {
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
   const [search, setSearch] = useQueryState("search", { defaultValue: "" });
+  const [sortOrder, setSortOrder] = useQueryState(
+    "sortOrder",
+    parseAsStringLiteral(["asc", "desc"] as const).withDefault("desc"),
+  );
   const [debouncedSearch] = useDebounceValue(search, 700);
 
-  const { user, logout } = useAuth();
-
-  const { data: blogs, isPending } = useGetPosts({
+  const { data: blogs, isPending, isError, refetch } = useGetPosts({
     page,
+    take: 9,
     search: debouncedSearch,
+    sortBy: "createdAt",
+    sortOrder,
   });
 
+  const posts = blogs?.data ?? [];
+  const total = blogs?.meta.total ?? 0;
+  const totalPage = blogs?.meta
+    ? Math.ceil(blogs.meta.total / blogs.meta.take)
+    : 0;
+
+  const handleSearchChange = (value: string) => {
+    setPage(1);
+    setSearch(value);
+  };
+
+  const handleSortChange = (value: "asc" | "desc") => {
+    setPage(1);
+    setSortOrder(value);
+  };
+
   return (
-    <div>
-      <div className="flex justify-center items-center h-24">
-        {user ? (
-          <div className="flex items-center gap-4">
-            <h1>Welcome, {user.name}</h1>
-            <Button variant="destructive" onClick={logout}>
-              Logout
-            </Button>
-            <Link to="/write">
-              <Button>Create Blog</Button>
-            </Link>
-          </div>
-        ) : (
-          <div>
-            <Link to="/login2">
-              <Button>Login Here</Button>
-            </Link>
-          </div>
-        )}
-      </div>
+    <div className="min-h-screen bg-background">
+      <Navbar />
 
-      <div className="max-w-2xl flex mx-auto my-8">
-        <Input
-          placeholder="search.."
-          onChange={(e) => {
-            setPage(1);
-            setSearch(e.target.value);
-          }}
-          value={search}
-        />
-      </div>
+      <HeroSections
+        search={search}
+        onSearchChange={handleSearchChange}
+        total={total}
+        isPending={isPending}
+      />
 
-      {isPending ? (
-        <div className="flex justify-center items-center h-100">
-          <Loading />
-        </div>
-      ) : (
-        <div className="grid grid-cols-3 gap-16">
-          {blogs?.data.map((blog) => {
-            return (
-              <Link key={blog.slug} to={`/blogs/${blog.slug}`}>
-                <div className="border border-black p-8">
-                  <p className="text-lg font-bold">{blog.title}</p>
-                  <p>{blog.description}</p>
-                  <p>{blog.user.nama}</p>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      )}
+      <BlogList
+        posts={posts}
+        total={total}
+        totalPage={totalPage}
+        page={page}
+        search={search}
+        sortOrder={sortOrder}
+        isPending={isPending}
+        isError={isError}
+        onSearchClear={() => handleSearchChange("")}
+        onSortChange={handleSortChange}
+        onPageChange={setPage}
+        onRetry={() => refetch()}
+      />
 
-      {!!blogs?.meta && (
-        <GlobalPagination
-          currentPage={blogs.meta.page}
-          totalPage={Math.ceil(blogs.meta.total / blogs.meta.take)}
-          onChangePage={(p) => setPage(p)}
-        />
-      )}
+      <Footer />
     </div>
   );
 }
