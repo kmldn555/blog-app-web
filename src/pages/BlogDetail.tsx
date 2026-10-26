@@ -1,3 +1,4 @@
+import Markdown from "@/components/Markdown";
 import { Button } from "@/components/ui/button";
 import useGetPostsBySlug from "@/hooks/api/post/useGetPostBySlug";
 import { Link, useParams } from "react-router";
@@ -42,7 +43,7 @@ function BlogDetail() {
 
       <p>{blog.description}</p>
 
-      <p>{blog.content}</p>
+      <Markdown content={blog.content}/>
     </div>
   );
 }
